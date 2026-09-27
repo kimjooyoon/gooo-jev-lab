@@ -2,12 +2,14 @@
 
 This fixture describes how a `.gooo` declaration can discover what the language can currently support without executing a task or granting authorization.
 
-The canonical implementation is in [gooo-jev](https://github.com/kimjooyoon/gooo-jev):
+The canonical implementation is in [gooo-jev](https://github.com/kimjooyoon/gooo-jev). Run these commands from a checkout of that repository, passing this lab fixture as the input path:
 
 ```sh
-go run ./cmd/gooo-assist examples/support-triage/partial.gooo pro
-go run ./cmd/gooo-assist --json examples/support-triage/partial.gooo pro
+go run ./cmd/gooo-assist /path/to/gooo-jev-lab/examples/support-triage/partial.gooo pro
+go run ./cmd/gooo-assist --json /path/to/gooo-jev-lab/examples/support-triage/partial.gooo pro
 ```
+
+The lab intentionally remains a thin integration boundary and does not duplicate the canonical command implementation.
 
 The contract keeps three states distinct:
 
