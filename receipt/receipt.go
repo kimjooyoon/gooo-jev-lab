@@ -24,11 +24,11 @@ const (
 type ConfidenceMethod string
 
 const (
-	ConfidenceMethodUnspecified      ConfidenceMethod = "unspecified"
-	ConfidenceMethodCalibrated       ConfidenceMethod = "calibrated"
-	ConfidenceMethodMaxProbability   ConfidenceMethod = "max_probability"
-	ConfidenceMethodTopTwoMargin     ConfidenceMethod = "top_two_margin"
-	ConfidenceMethodOneMinusEntropy  ConfidenceMethod = "one_minus_entropy"
+	ConfidenceMethodUnspecified     ConfidenceMethod = "unspecified"
+	ConfidenceMethodCalibrated      ConfidenceMethod = "calibrated"
+	ConfidenceMethodMaxProbability  ConfidenceMethod = "max_probability"
+	ConfidenceMethodTopTwoMargin    ConfidenceMethod = "top_two_margin"
+	ConfidenceMethodOneMinusEntropy ConfidenceMethod = "one_minus_entropy"
 )
 
 // Question defines the expected shape of one typed decision.
@@ -40,12 +40,12 @@ type Question struct {
 
 // Signal is an observation, never an authorization.
 type Signal struct {
-	QuestionID    string             `json:"question_id"`
-	Kind          Kind               `json:"kind"`
-	Value         float64            `json:"value,omitempty"`
-	Probabilities map[string]float64 `json:"probabilities,omitempty"`
-	Confidence    float64            `json:"confidence"`
-	ConfidenceMethod ConfidenceMethod `json:"confidence_method"`
+	QuestionID       string             `json:"question_id"`
+	Kind             Kind               `json:"kind"`
+	Value            float64            `json:"value,omitempty"`
+	Probabilities    map[string]float64 `json:"probabilities,omitempty"`
+	Confidence       float64            `json:"confidence"`
+	ConfidenceMethod ConfidenceMethod   `json:"confidence_method"`
 }
 
 // Evidence binds the receipt to the language pipeline that produced it.
