@@ -3,6 +3,7 @@ module support_triage_observation
 input ticket_state
 input typed_decision_signal
 input confidence
+input confidence_method
 input review_threshold
 
 status ACCEPT observation confidence meets a reviewable routing threshold
@@ -15,5 +16,6 @@ field review_threshold
 
 constraint observation_only
 constraint human_review_boundary
+constraint confidence_method_explicit
 constraint no_execution
 constraint no_authorization

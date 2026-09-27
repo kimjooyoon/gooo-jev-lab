@@ -19,6 +19,18 @@ const (
 	KindNoul   Kind = "noul"
 )
 
+// ConfidenceMethod identifies how a provider derived Signal.Confidence.
+// An unspecified method is intentionally not eligible for automatic routing.
+type ConfidenceMethod string
+
+const (
+	ConfidenceMethodUnspecified     ConfidenceMethod = "unspecified"
+	ConfidenceMethodCalibrated      ConfidenceMethod = "calibrated"
+	ConfidenceMethodMaxProbability  ConfidenceMethod = "max_probability"
+	ConfidenceMethodTopTwoMargin    ConfidenceMethod = "top_two_margin"
+	ConfidenceMethodOneMinusEntropy ConfidenceMethod = "one_minus_entropy"
+)
+
 // Question defines the expected shape of one typed decision.
 type Question struct {
 	ID      string   `json:"id"`
@@ -28,11 +40,12 @@ type Question struct {
 
 // Signal is an observation, never an authorization.
 type Signal struct {
-	QuestionID    string             `json:"question_id"`
-	Kind          Kind               `json:"kind"`
-	Value         float64            `json:"value,omitempty"`
-	Probabilities map[string]float64 `json:"probabilities,omitempty"`
-	Confidence    float64            `json:"confidence"`
+	QuestionID       string             `json:"question_id"`
+	Kind             Kind               `json:"kind"`
+	Value            float64            `json:"value,omitempty"`
+	Probabilities    map[string]float64 `json:"probabilities,omitempty"`
+	Confidence       float64            `json:"confidence"`
+	ConfidenceMethod ConfidenceMethod   `json:"confidence_method"`
 }
 
 // Evidence binds the receipt to the language pipeline that produced it.
@@ -110,6 +123,9 @@ func (r Receipt) Validate() error {
 		if !finiteUnit(signal.Confidence) {
 			return fmt.Errorf("signal %q has invalid confidence", signal.QuestionID)
 		}
+		if !validConfidenceMethod(signal.ConfidenceMethod) {
+			return fmt.Errorf("signal %q has unsupported confidence method", signal.QuestionID)
+		}
 		switch signal.Kind {
 		case KindChoice:
 			if err := validateChoice(question, signal); err != nil {
@@ -153,6 +169,22 @@ func finiteUnit(value float64) bool {
 	return !math.IsNaN(value) && !math.IsInf(value, 0) && value >= 0 && value <= 1
 }
 
+func validConfidenceMethod(method ConfidenceMethod) bool {
+	switch method {
+	case "", ConfidenceMethodUnspecified, ConfidenceMethodCalibrated, ConfidenceMethodMaxProbability, ConfidenceMethodTopTwoMargin, ConfidenceMethodOneMinusEntropy:
+		return true
+	default:
+		return false
+	}
+}
+
+func normalizedConfidenceMethod(method ConfidenceMethod) ConfidenceMethod {
+	if method == "" {
+		return ConfidenceMethodUnspecified
+	}
+	return method
+}
+
 func validDigest(value string) bool {
 	const prefix = "sha256:"
 	if len(value) != len(prefix)+sha256.Size*2 || value[:len(prefix)] != prefix {
@@ -192,6 +224,25 @@ func RouteByConfidence(confidence, threshold float64) Route {
 	}
 	if confidence >= threshold {
 		return RouteAccept
+	}
+	return RouteReview
+}
+
+// RouteBySignal returns an observation-derived route only when the confidence
+// method is explicit and present in the caller's allowlist. It never authorizes
+// execution or a side effect.
+func RouteBySignal(signal Signal, threshold float64, allowedMethods ...ConfidenceMethod) Route {
+	if !finiteUnit(signal.Confidence) || !finiteUnit(threshold) || !validConfidenceMethod(signal.ConfidenceMethod) {
+		return RouteReview
+	}
+	method := normalizedConfidenceMethod(signal.ConfidenceMethod)
+	if method == ConfidenceMethodUnspecified {
+		return RouteReview
+	}
+	for _, allowed := range allowedMethods {
+		if normalizedConfidenceMethod(allowed) == method {
+			return RouteByConfidence(signal.Confidence, threshold)
+		}
 	}
 	return RouteReview
 }
