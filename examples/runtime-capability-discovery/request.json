@@ -1,0 +1,6 @@
+{
+  "source_version": "gooo-source-v1",
+  "contract_version": "jev-capability-discovery-v1",
+  "query": "What can gooo do with this declaration?",
+  "declaration": "entity ticket\nproperty\n"
+}
