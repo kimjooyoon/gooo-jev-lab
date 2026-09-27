@@ -17,8 +17,8 @@ func fixtureReceipt() Receipt {
 			{ID: "urgent", Kind: KindNoul},
 		},
 		Signals: []Signal{
-			{QuestionID: "route", Kind: KindChoice, Probabilities: map[string]float64{"accept": 0.8, "review": 0.2}, Confidence: 0.9},
-			{QuestionID: "urgent", Kind: KindNoul, Value: 0.7, Confidence: 0.8},
+			{QuestionID: "route", Kind: KindChoice, Probabilities: map[string]float64{"accept": 0.8, "review": 0.2}, Confidence: 0.9, ConfidenceMethod: ConfidenceMethodCalibrated},
+			{QuestionID: "urgent", Kind: KindNoul, Value: 0.7, Confidence: 0.8, ConfidenceMethod: ConfidenceMethodMaxProbability},
 		},
 		Evidence: Evidence{
 			DeclarationDigest:        digest('c'),
@@ -60,6 +60,11 @@ func TestReceiptRejectsTampering(t *testing.T) {
 	if err := receipt.Validate(); err == nil {
 		t.Fatal("Validate() accepted a distribution that does not sum to one")
 	}
+	receipt = fixtureReceipt()
+	receipt.Signals[0].ConfidenceMethod = "provider_guess"
+	if err := receipt.Validate(); err == nil {
+		t.Fatal("Validate() accepted an unknown confidence method")
+	}
 }
 
 func TestRouteByConfidenceNeverAuthorizes(t *testing.T) {
@@ -71,5 +76,19 @@ func TestRouteByConfidenceNeverAuthorizes(t *testing.T) {
 	}
 	if got := RouteByConfidence(0.95, 2); got != RouteReview {
 		t.Fatalf("RouteByConfidence() invalid threshold = %q, want %q", got, RouteReview)
+	}
+}
+
+func TestRouteBySignalRequiresExplicitAllowedMethod(t *testing.T) {
+	signal := Signal{Confidence: 0.95, ConfidenceMethod: ConfidenceMethodCalibrated}
+	if got := RouteBySignal(signal, 0.9, ConfidenceMethodCalibrated); got != RouteAccept {
+		t.Fatalf("RouteBySignal() = %q, want %q", got, RouteAccept)
+	}
+	if got := RouteBySignal(signal, 0.9, ConfidenceMethodMaxProbability); got != RouteReview {
+		t.Fatalf("RouteBySignal() with disallowed method = %q, want %q", got, RouteReview)
+	}
+	signal.ConfidenceMethod = ConfidenceMethodUnspecified
+	if got := RouteBySignal(signal, 0.9, ConfidenceMethodUnspecified); got != RouteReview {
+		t.Fatalf("RouteBySignal() with unspecified method = %q, want %q", got, RouteReview)
 	}
 }

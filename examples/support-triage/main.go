@@ -7,6 +7,10 @@ import (
 )
 
 func main() {
-	route := receipt.RouteByConfidence(0.92, 0.85)
+	signal := receipt.Signal{
+		Confidence:       0.92,
+		ConfidenceMethod: receipt.ConfidenceMethodCalibrated,
+	}
+	route := receipt.RouteBySignal(signal, 0.85, receipt.ConfidenceMethodCalibrated)
 	fmt.Printf("support-triage observation route: %s\n", route)
 }
