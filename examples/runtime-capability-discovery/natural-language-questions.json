@@ -1,0 +1,38 @@
+[
+  {
+    "id": "overview",
+    "question": "What can this .gooo declaration do?",
+    "expected_status": "AVAILABLE",
+    "expected_capability": "overview",
+    "boundary": "non-executing"
+  },
+  {
+    "id": "provenance",
+    "question": "Where did this .gooo declaration come from?",
+    "expected_status": "AVAILABLE",
+    "expected_capability": "provenance",
+    "boundary": "non-executing"
+  },
+  {
+    "id": "external-boundary",
+    "question": "Does this declaration need an external boundary?",
+    "expected_status": "AVAILABLE",
+    "expected_capability": "external-boundary",
+    "boundary": "non-authorizing"
+  },
+  {
+    "id": "execution",
+    "question": "Can this declaration execute anything?",
+    "expected_status": "AVAILABLE",
+    "expected_capability": "execution-boundary",
+    "boundary": "non-executing"
+  },
+  {
+    "id": "unknown",
+    "question": "Which capability is intentionally not known yet?",
+    "expected_status": "DEFERRED",
+    "expected_capability": "unknown-capability",
+    "boundary": "non-authorizing"
+  }
+]
+]
