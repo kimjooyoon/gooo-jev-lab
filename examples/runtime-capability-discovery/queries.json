@@ -1,0 +1,20 @@
+[
+  {
+    "name": "overview",
+    "query": "What can gooo do with this declaration?",
+    "expected_status": "BOUND",
+    "boundary": "read_only_catalog"
+  },
+  {
+    "name": "provenance",
+    "query": "Where did this .gooo declaration come from?",
+    "expected_status": "BOUND",
+    "boundary": "source_generation_reverse_observation"
+  },
+  {
+    "name": "execution-boundary",
+    "query": "What explicit boundary is needed before execution?",
+    "expected_status": "DEFERRED",
+    "boundary": "external_authorization"
+  }
+]
