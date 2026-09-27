@@ -19,3 +19,6 @@ JEV-like models are useful when a program needs a bounded judgment, a probabilit
 ## Validation
 
 The repository validates in GitHub Actions only. Local Go execution is intentionally not part of the development contract.
+## Capability discovery fixture
+
+[`examples/capability-discovery`](examples/capability-discovery) provides a source-bound `.gooo` declaration and a canonical command for asking what the language can currently expose. It records provenance without executing work or granting authority.
