@@ -1,0 +1,39 @@
+{
+  "name": "direct-natural-language-capability-query",
+  "runtime": "gooo-jev-runtime/cmd/jevcal-discover",
+  "identity_flags": {
+    "source_version": "gooo-jev-runtime/main",
+    "contract_version": "jev-capability-discovery-v1"
+  },
+  "queries": [
+    {
+      "id": "overview",
+      "query": "What can this .gooo declaration do?",
+      "expected_status": "BOUND",
+      "expected_boundary": "read-only; non-executing; non-authorizing"
+    },
+    {
+      "id": "provenance",
+      "query": "Where did this .gooo declaration come from?",
+      "expected_status": "BOUND",
+      "expected_boundary": "read-only; non-executing; non-authorizing"
+    },
+    {
+      "id": "execution",
+      "query": "What explicit boundary is needed before execution?",
+      "expected_status": "DEFERRED",
+      "expected_boundary": "read-only discovery; external authorization remains required"
+    }
+  ],
+  "invocation": [
+    "go",
+    "run",
+    "./cmd/jevcal-discover",
+    "--source-version",
+    "gooo-jev-runtime/main",
+    "--contract-version",
+    "jev-capability-discovery-v1",
+    "--query",
+    "<natural-language-question>"
+  ]
+}
