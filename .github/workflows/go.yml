@@ -1,0 +1,37 @@
+name: Go
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          cache: true
+      - name: Check formatting
+        run: |
+          files="$(gofmt -l receipt)"
+          if [ -n "$files" ]; then
+            echo "unformatted Go files:"
+            echo "$files"
+            for file in $files; do
+              echo "::group::$file"
+              gofmt -d "$file"
+              echo "::endgroup::"
+            done
+            exit 1
+          fi
+      - name: Test
+        run: go test ./...
+      - name: Vet
+        run: go vet ./...
