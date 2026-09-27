@@ -1,0 +1,4 @@
+package support
+namespace triage
+entity ticket
+property
