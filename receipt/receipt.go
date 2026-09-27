@@ -70,10 +70,10 @@ func (r Receipt) Validate() error {
 		return errors.New("schema, workload_id, and model are required")
 	}
 	for name, digest := range map[string]string{
-		"request_digest":              r.RequestDigest,
-		"state_digest":                r.StateDigest,
-		"declaration_digest":          r.Evidence.DeclarationDigest,
-		"ir_digest":                   r.Evidence.IRDigest,
+		"request_digest":             r.RequestDigest,
+		"state_digest":               r.StateDigest,
+		"declaration_digest":         r.Evidence.DeclarationDigest,
+		"ir_digest":                  r.Evidence.IRDigest,
 		"generation_digest":           r.Evidence.GenerationDigest,
 		"reverse_observation_digest": r.Evidence.ReverseObservationDigest,
 	} {
