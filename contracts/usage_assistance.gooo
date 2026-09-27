@@ -1,0 +1,33 @@
+# Capability assistance remains a read-only contract sketch.
+# Canonical usage discovery and provenance validation live in gooo-jev.
+
+module usage_assistance
+
+input declaration_source
+input prefix
+input capability_id
+input capability_state
+input next_operation
+input source_digest
+input discovery_digest
+input plan_digest
+input assistance_digest
+
+status AVAILABLE a capability is bound and can be described
+status DEFERRED a capability remains evidence-bound and cannot be claimed yet
+status UNKNOWN the declaration boundary is not sufficient for a capability claim
+
+field capability_id
+field capability_state
+field next_operation
+field source_digest
+field discovery_digest
+field plan_digest
+field assistance_digest
+
+constraint observation_only
+constraint non_executing
+constraint non_authorizing
+constraint provenance_bound
+constraint deferred_is_not_success
+constraint deferred_is_not_failure
