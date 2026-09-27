@@ -74,7 +74,7 @@ func (r Receipt) Validate() error {
 		"state_digest":               r.StateDigest,
 		"declaration_digest":         r.Evidence.DeclarationDigest,
 		"ir_digest":                  r.Evidence.IRDigest,
-		"generation_digest":           r.Evidence.GenerationDigest,
+		"generation_digest":          r.Evidence.GenerationDigest,
 		"reverse_observation_digest": r.Evidence.ReverseObservationDigest,
 	} {
 		if !validDigest(digest) {
