@@ -1,0 +1,13 @@
+# Experimental contract sketch: promote only after canonical gooo grammar review.
+# The executable behavior is kept in receipt/ and is validated by GitHub Actions.
+
+package jev_lab
+
+contract DecisionEvidenceLab {
+  input state text
+  input questions typed_decision_set
+  output receipt typed_decision_receipt
+  evidence declaration ir generation reverse_observation
+  route uncertain REVIEW
+  never authorize execute
+}
